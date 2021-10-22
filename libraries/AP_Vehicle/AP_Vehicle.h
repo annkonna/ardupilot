@@ -47,6 +47,8 @@
 #include <AP_ExternalAHRS/AP_ExternalAHRS.h>
 #include <AP_VideoTX/AP_SmartAudio.h>
 
+#include "RMM.h"
+
 class AP_Vehicle : public AP_HAL::HAL::Callbacks {
 
 public:
@@ -297,6 +299,7 @@ protected:
     AP_Baro barometer;
     Compass compass;
     AP_InertialSensor ins;
+    RMM rmm_ins;
 #if HAL_BUTTON_ENABLED
     AP_Button button;
 #endif
