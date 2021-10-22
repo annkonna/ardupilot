@@ -53,7 +53,7 @@ class AP_Vehicle : public AP_HAL::HAL::Callbacks {
 
 public:
 
-    AP_Vehicle() {
+    AP_Vehicle() : rmm_ins(sizeof(AP_InertialSensor)) {
         if (_singleton) {
             AP_HAL::panic("Too many Vehicles");
         }
