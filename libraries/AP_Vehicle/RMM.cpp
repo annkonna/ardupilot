@@ -3,10 +3,10 @@
 
 using namespace std;
 
-RMM::RMM(int size_in_MB) {
-    pool = new char[size_in_MB * 1024 * 1024];
+RMM::RMM(int size_in_bytes) {
+    pool = new char[size_in_bytes];
     free_offset = 0;
-    pool_size = size_in_MB * 1024 * 1024;
+    pool_size = size_in_bytes;
 }
 
 RMM::~RMM() {
