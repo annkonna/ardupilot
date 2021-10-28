@@ -47,7 +47,7 @@
 #include <AP_ExternalAHRS/AP_ExternalAHRS.h>
 #include <AP_VideoTX/AP_SmartAudio.h>
 
-#include "RMM.h"
+#include <AP_RMM/RMM.h>     // Region-based Memory Management library
 
 class AP_Vehicle : public AP_HAL::HAL::Callbacks {
 
