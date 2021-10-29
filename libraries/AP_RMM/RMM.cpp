@@ -18,7 +18,7 @@ RMM::RMM(void* parent_pool, int parent_free_offset, int size_in_bytes) {
 }
 
 RMM::~RMM() {
-    delete [] (char*)pool;
+    if (top_level) delete [] (char*)pool;
 }
 
 void* RMM::allocate(int size_in_bytes) {
