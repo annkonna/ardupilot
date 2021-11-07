@@ -82,6 +82,12 @@
 
 const AP_HAL::HAL& hal = AP_HAL::get_HAL();
 
+// **APIS-REPLACE
+Copter copter;
+AP_Vehicle& vehicle = copter;
+
+AP_HAL_MAIN_CALLBACKS(&copter);
+
 #define SCHED_TASK(func, rate_hz, max_time_micros) SCHED_TASK_CLASS(Copter, &copter, func, rate_hz, max_time_micros)
 
 /*
@@ -160,7 +166,8 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] = {
     SCHED_TASK(twentyfive_hz_logging, 25,    110),
     SCHED_TASK_CLASS(AP_Logger,      &copter.logger,           periodic_tasks, 400, 300),
 #endif
-    SCHED_TASK_CLASS(AP_InertialSensor,    &copter.ins,                 periodic,       400,  50),
+// **APIS-REPLACE
+    SCHED_TASK_CLASS(AP_InertialSensor,    copter.ins,                 periodic,       400,  50),
 
     SCHED_TASK_CLASS(AP_Scheduler,         &copter.scheduler,           update_logging, 0.1,  75),
 #if RPM_ENABLED == ENABLED
@@ -222,7 +229,8 @@ constexpr int8_t Copter::_failsafe_priorities[7];
 void Copter::fast_loop()
 {
     // update INS immediately to get current gyro data populated
-    ins.update();
+// **APIS-REPLACE
+    ins->update();
 
     // run low level rate controllers that only require IMU data
     attitude_control->rate_controller_run();
@@ -718,7 +726,9 @@ Copter::Copter(void)
     sensor_health.compass = true;
 }
 
+/* // **APIS-REPLACE
 Copter copter;
 AP_Vehicle& vehicle = copter;
 
 AP_HAL_MAIN_CALLBACKS(&copter);
+ */

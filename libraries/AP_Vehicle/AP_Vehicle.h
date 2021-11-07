@@ -53,7 +53,16 @@ class AP_Vehicle : public AP_HAL::HAL::Callbacks {
 
 public:
 
+// **APIS-REPLACE
     AP_Vehicle() : rmm_ins(sizeof(AP_InertialSensor)) {
+        // allocate AP_InertialSensor object in the region.
+        // Reset the region for reuse.
+        rmm_ins.reset();
+        // allocate the AP_inertialSensor object in the Region.
+        void *raw = rmm_ins.allocate(sizeof(AP_InertialSensor));
+        // use placement-new to call its constructor.
+        ins = new (raw) AP_InertialSensor;
+
         if (_singleton) {
             AP_HAL::panic("Too many Vehicles");
         }
@@ -298,8 +307,11 @@ protected:
     AP_GPS gps;
     AP_Baro barometer;
     Compass compass;
-    AP_InertialSensor ins;
+// **APIS-REPLACE
+//    AP_InertialSensor ins;
     RMM rmm_ins;
+    AP_InertialSensor *ins;
+    
 #if HAL_BUTTON_ENABLED
     AP_Button button;
 #endif

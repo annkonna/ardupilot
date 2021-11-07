@@ -277,11 +277,13 @@ void ModeSystemId::log_data() const
 {
     Vector3f delta_angle;
     float delta_angle_dt;
-    copter.ins.get_delta_angle(delta_angle, delta_angle_dt);
+// **APIS-REPLACE
+    copter.ins->get_delta_angle(delta_angle, delta_angle_dt);
 
     Vector3f delta_velocity;
     float delta_velocity_dt;
-    copter.ins.get_delta_velocity(delta_velocity, delta_velocity_dt);
+// **APIS-REPLACE
+    copter.ins->get_delta_velocity(delta_velocity, delta_velocity_dt);
 
     if (is_positive(delta_angle_dt) && is_positive(delta_velocity_dt)) {
         copter.Log_Write_SysID_Data(waveform_time, waveform_sample, waveform_freq_rads / (2 * M_PI), degrees(delta_angle.x / delta_angle_dt), degrees(delta_angle.y / delta_angle_dt), degrees(delta_angle.z / delta_angle_dt), delta_velocity.x / delta_velocity_dt, delta_velocity.y / delta_velocity_dt, delta_velocity.z / delta_velocity_dt);

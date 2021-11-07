@@ -509,8 +509,9 @@ const AP_Param::Info Copter::var_info[] = {
 
     // @Group: INS_
     // @Path: ../libraries/AP_InertialSensor/AP_InertialSensor.cpp
-    GOBJECT(ins,            "INS_", AP_InertialSensor),
-
+// **APIS-REPLACE
+//    GOBJECT(ins,            "INS_", AP_InertialSensor),
+    GOBJECTPTR(ins,            "INS_", AP_InertialSensor),
     // @Group: WPNAV_
     // @Path: ../libraries/AC_WPNav/AC_WPNav.cpp
     GOBJECTPTR(wp_nav, "WPNAV_",       AC_WPNav),
