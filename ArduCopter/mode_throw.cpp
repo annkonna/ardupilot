@@ -206,7 +206,8 @@ void ModeThrow::run()
         last_log_ms = now;
         const float velocity = inertial_nav.get_velocity().length();
         const float velocity_z = inertial_nav.get_velocity().z;
-        const float accel = copter.ins.get_accel().length();
+// **APIS-REPLACE
+        const float accel = copter.ins->get_accel().length();
         const float ef_accel_z = ahrs.get_accel_ef().z;
         const bool throw_detect = (stage > Throw_Detecting) || throw_detected();
         const bool attitude_ok = (stage > Throw_Uprighting) || throw_attitude_good();
@@ -269,7 +270,8 @@ bool ModeThrow::throw_detected()
     bool free_falling = ahrs.get_accel_ef().z > -0.25 * GRAVITY_MSS;
 
     // Check if the accel length is < 1.0g indicating that any throw action is complete and the copter has been released
-    bool no_throw_action = copter.ins.get_accel().length() < 1.0f * GRAVITY_MSS;
+// **APIS-REPLACE
+    bool no_throw_action = copter.ins->get_accel().length() < 1.0f * GRAVITY_MSS;
 
     // High velocity or free-fall combined with increasing height indicate a possible air-drop or throw release
     bool possible_throw_detected = (free_falling || high_speed) && changing_height && no_throw_action;

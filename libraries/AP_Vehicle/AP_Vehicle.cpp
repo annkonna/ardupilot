@@ -337,9 +337,11 @@ bool AP_Vehicle::is_crashed() const
 // @Field: DnF4: dynamic harmonic notch centre frequency for motor 4
 void AP_Vehicle::write_notch_log_messages() const
 {
-    const float* notches = ins.get_gyro_dynamic_notch_center_frequencies_hz();
+// **APIS-REPLACE
+    const float* notches = ins->get_gyro_dynamic_notch_center_frequencies_hz();
     AP::logger().Write(
-        "FTN", "TimeUS,NDn,DnF1,DnF2,DnF3,DnF4", "s-zzzz", "F-----", "QBffff", AP_HAL::micros64(), ins.get_num_gyro_dynamic_notch_center_frequencies(),
+// **APIS-REPLACE
+        "FTN", "TimeUS,NDn,DnF1,DnF2,DnF3,DnF4", "s-zzzz", "F-----", "QBffff", AP_HAL::micros64(), ins->get_num_gyro_dynamic_notch_center_frequencies(),
             notches[0], notches[1], notches[2], notches[3]);
 }
 
@@ -348,7 +350,8 @@ void AP_Vehicle::update_dynamic_notch_at_specified_rate()
 {
     const uint32_t now = AP_HAL::millis();
 
-    if (ins.has_harmonic_option(HarmonicNotchFilterParams::Options::LoopRateUpdate)
+// **APIS-REPLACE
+    if (ins->has_harmonic_option(HarmonicNotchFilterParams::Options::LoopRateUpdate)
         || now - _last_notch_update_ms > 5) {
         update_dynamic_notch();
         _last_notch_update_ms = now;
