@@ -225,9 +225,16 @@ void Copter::get_scheduler_tasks(const AP_Scheduler::Task *&tasks,
 
 constexpr int8_t Copter::_failsafe_priorities[7];
 
+void Copter::accelRegionReset(){
+	&ins._accel = ins.INSaccelRegion.allocate(sizeof(Vector3f) * INS_MAX_INSTANCES);
+	&ins._accel_filtered = ins.INSaccelRegion.allocate(sizeof(Vector3f) * INS_MAX_INSTANCES);
+	&ins._delta_velocity_acc = ins.INSaccelRegion.allocate(sizeof(Vector3f) * INS_MAX_INSTANCES);
+}
+
 // Main loop - 400hz
 void Copter::fast_loop()
 {
+	accelRegionReset();
     // update INS immediately to get current gyro data populated
 // **APIS-REPLACE
     ins->update();
@@ -274,6 +281,8 @@ void Copter::fast_loop()
     if (should_log(MASK_LOG_ANY)) {
         Log_Sensor_Health();
     }
+    
+    ins.INSaccelRegion.reset();
 
     AP_Vehicle::fast_loop();
 }
