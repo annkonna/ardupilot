@@ -48,6 +48,7 @@
 #include <Filter/NotchFilter.h>
 #include <Filter/HarmonicNotchFilter.h>
 #include <AP_Math/polyfit.h>
+#include <AP_RMM/RMM.h>
 
 class AP_InertialSensor_Backend;
 class AuxiliaryBus;
@@ -71,6 +72,8 @@ class AP_InertialSensor : AP_AccelCal_Client
     friend class AP_InertialSensor_Backend;
 
 public:
+    RMM INSaccelRegion = new RMM(1024*1024);
+    
     AP_InertialSensor();
 
     /* Do not allow copies */
