@@ -163,7 +163,7 @@ void Sub::init_ardupilot()
     // enable CPU failsafe
     mainloop_failsafe_enable();
 
-    ins.set_log_raw_bit(MASK_LOG_IMU_RAW);
+    ins->set_log_raw_bit(MASK_LOG_IMU_RAW);
 
     // flag that initialisation has completed
     ap.initialised = true;
@@ -180,7 +180,7 @@ void Sub::startup_INS_ground()
     ahrs.set_vehicle_class(AP_AHRS::VehicleClass::SUBMARINE);
 
     // Warm up and calibrate gyro offsets
-    ins.init(scheduler.get_loop_rate_hz());
+    ins->init(scheduler.get_loop_rate_hz());
 
     // reset ahrs including gyro bias
     ahrs.reset();

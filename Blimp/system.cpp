@@ -91,7 +91,7 @@ void Blimp::init_ardupilot()
     // ready to fly
     serial_manager.set_blocking_writes_all(false);
 
-    ins.set_log_raw_bit(MASK_LOG_IMU_RAW);
+    ins->set_log_raw_bit(MASK_LOG_IMU_RAW);
 
     // setup fin output
     motors->setup_fins();
@@ -130,7 +130,7 @@ void Blimp::startup_INS_ground()
     ahrs.set_vehicle_class(AP_AHRS::VehicleClass::COPTER);
 
     // Warm up and calibrate gyro offsets
-    ins.init(scheduler.get_loop_rate_hz());
+    ins->init(scheduler.get_loop_rate_hz());
 
     // reset ahrs including gyro bias
     ahrs.reset();

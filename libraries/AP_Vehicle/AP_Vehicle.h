@@ -310,7 +310,7 @@ protected:
 // **APIS-REPLACE
 //    AP_InertialSensor ins;
     RMM rmm_ins;
-    AP_InertialSensor *ins;
+    AP_InertialSensor* ins;
     
 #if HAL_BUTTON_ENABLED
     AP_Button button;

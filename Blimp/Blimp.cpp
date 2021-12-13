@@ -54,7 +54,7 @@ const AP_Scheduler::Task Blimp::scheduler_tasks[] = {
     SCHED_TASK(twentyfive_hz_logging, 25,    110),
     SCHED_TASK_CLASS(AP_Logger,      &blimp.logger,           periodic_tasks, 400, 300),
 #endif
-    SCHED_TASK_CLASS(AP_InertialSensor,    &blimp.ins,                 periodic,       400,  50),
+    SCHED_TASK_CLASS(AP_InertialSensor,    blimp.ins,                 periodic,       400,  50),
     SCHED_TASK_CLASS(AP_Scheduler,         &blimp.scheduler,           update_logging, 0.1,  75),
     SCHED_TASK_CLASS(Compass,              &blimp.compass,             cal_update,     100, 100),
     SCHED_TASK(accel_cal_update,      10,    100),
@@ -78,7 +78,7 @@ constexpr int8_t Blimp::_failsafe_priorities[4];
 void Blimp::fast_loop()
 {
     // update INS immediately to get current gyro data populated
-    ins.update();
+    ins->update();
 
     // send outputs to the motors library immediately
     motors_output();

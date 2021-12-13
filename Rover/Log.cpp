@@ -230,7 +230,7 @@ struct PACKED log_Throttle {
 // Write a throttle control packet
 void Rover::Log_Write_Throttle()
 {
-    const Vector3f accel = ins.get_accel();
+    const Vector3f accel = ins->get_accel();
     float speed = logger.quiet_nanf();
     g2.attitude_control.get_forward_speed(speed);
     struct log_Throttle pkt = {

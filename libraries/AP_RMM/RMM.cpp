@@ -60,6 +60,35 @@ void* RMM::allocate(int size_in_bytes) {
 	return (char*)pool + temp_offset;
 }
 
+void RMM::create_new_pool(int size_in_bytes){
+	pool = new char[size_in_bytes+RMM_FULL];
+	// nested_count = 1;
+	//	    free_offset = 0;
+	//	        pool_size = size_in_byt
+	bool* temp1 = (bool*) ((char*)pool+RMM_TOP_LEVEL);
+	int* temp2 = (int*) ((char*)pool+RMM_SIZE);
+	int* temp3 = (int*) ((char*)pool+RMM_OFFSET);
+	int* temp4 = (int*) ((char*)pool+RMM_NESTED_COUNT);
+	RMM** temp5 = (RMM**) ((char*)pool+RMM_PARENT_PTR);
+
+//	cout << pool << " "<< temp1<<" "<<temp2<< " "<< temp3<< endl;
+	//int* temp2 = (int*) (pool+SIZE);
+	//int* temp3 = (int*) (pool+OFFSET);
+	*temp1 = true;
+	*temp2 = size_in_bytes+RMM_FULL;
+	*temp3 = 0+RMM_FULL;
+	*temp4 = 1; 	
+	*temp5 = nullptr;
+
+}
+
+void RMM::pool_delete(){
+	bool* temp1 = (bool*) (pool+RMM_TOP_LEVEL);
+	if(*temp1 == true){
+		delete [] (char*)pool;
+	}
+}
+
 void RMM::reset() {
 	int* freetemp = (int*) ((char*)pool+RMM_OFFSET);
 	*freetemp = 0+RMM_FULL;

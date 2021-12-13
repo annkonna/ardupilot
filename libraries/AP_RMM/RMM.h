@@ -30,6 +30,10 @@ public:
 
     void dump_region();
 
+    void create_new_pool(int);
+
+    void pool_delete();
+
 private:
     #define RMM_TOP_LEVEL       (0)
     #define RMM_SIZE            (0+sizeof(int))

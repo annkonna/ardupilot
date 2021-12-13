@@ -48,6 +48,7 @@
 #include <Filter/NotchFilter.h>
 #include <Filter/HarmonicNotchFilter.h>
 #include <AP_Math/polyfit.h>
+#include <AP_RMM/RMM.h>
 
 class AP_InertialSensor_Backend;
 class AuxiliaryBus;
@@ -71,6 +72,9 @@ class AP_InertialSensor : AP_AccelCal_Client
     friend class AP_InertialSensor_Backend;
 
 public:
+    RMM INSaccelRegion = RMM(1024*1024);
+    RMM INSgyroRegion = RMM(1024*1024);
+    
     AP_InertialSensor();
 
     /* Do not allow copies */
@@ -436,6 +440,9 @@ public:
     // force save of current calibration as valid
     void force_save_calibration(void);
 
+    void accelRegionReset();
+    void gyroRegionReset();
+
 private:
     // load backend drivers
     bool _add_backend(AP_InertialSensor_Backend *backend);
@@ -473,28 +480,28 @@ private:
     float _loop_delta_t_max;
 
     // Most recent accelerometer reading
-    Vector3f _accel[INS_MAX_INSTANCES];
+    Vector3f* _accel = (Vector3f*) INSaccelRegion.allocate(sizeof(Vector3f)*INS_MAX_INSTANCES);
     Vector3f _delta_velocity[INS_MAX_INSTANCES];
     float _delta_velocity_dt[INS_MAX_INSTANCES];
     bool _delta_velocity_valid[INS_MAX_INSTANCES];
     // delta velocity accumulator
-    Vector3f _delta_velocity_acc[INS_MAX_INSTANCES];
+    Vector3f* _delta_velocity_acc = (Vector3f*) INSaccelRegion.allocate(sizeof(Vector3f)*INS_MAX_INSTANCES);
     // time accumulator for delta velocity accumulator
-    float _delta_velocity_acc_dt[INS_MAX_INSTANCES];
+    float* _delta_velocity_acc_dt = (float*) INSaccelRegion.allocate(sizeof(float)*INS_MAX_INSTANCES);
 
     // Low Pass filters for gyro and accel
-    LowPassFilter2pVector3f _accel_filter[INS_MAX_INSTANCES];
-    LowPassFilter2pVector3f _gyro_filter[INS_MAX_INSTANCES];
-    Vector3f _accel_filtered[INS_MAX_INSTANCES];
-    Vector3f _gyro_filtered[INS_MAX_INSTANCES];
+    LowPassFilter2pVector3f* _accel_filter = (LowPassFilter2pVector3f*) INSaccelRegion.allocate(sizeof(LowPassFilter2pVector3f)*INS_MAX_INSTANCES);
+    LowPassFilter2pVector3f* _gyro_filter = (LowPassFilter2pVector3f*) INSgyroRegion.allocate(sizeof(LowPassFilter2pVector3f)*INS_MAX_INSTANCES);
+    Vector3f* _accel_filtered = (Vector3f*) INSaccelRegion.allocate(sizeof(Vector3f)*INS_MAX_INSTANCES);
+    Vector3f* _gyro_filtered = (Vector3f*) INSgyroRegion.allocate(sizeof(Vector3f)*INS_MAX_INSTANCES);
 #if HAL_WITH_DSP
     // Thread-safe public version of _last_raw_gyro
     Vector3f _gyro_raw[INS_MAX_INSTANCES];
     FloatBuffer _gyro_window[INS_MAX_INSTANCES][XYZ_AXIS_COUNT];
     uint16_t _gyro_window_size;
 #endif
-    bool _new_accel_data[INS_MAX_INSTANCES];
-    bool _new_gyro_data[INS_MAX_INSTANCES];
+    bool* _new_accel_data = (bool*) INSaccelRegion.allocate(sizeof(bool)*INS_MAX_INSTANCES);
+    bool* _new_gyro_data = (bool*) INSgyroRegion.allocate(sizeof(bool)*INS_MAX_INSTANCES);
 
     // optional notch filter on gyro
     NotchFilterParams _notch_filter;
@@ -508,7 +515,7 @@ private:
     uint8_t _num_calculated_harmonic_notch_frequencies;
 
     // Most recent gyro reading
-    Vector3f _gyro[INS_MAX_INSTANCES];
+    Vector3f* _gyro = (Vector3f*) INSgyroRegion.allocate(sizeof(Vector3f)*INS_MAX_INSTANCES);
     Vector3f _delta_angle[INS_MAX_INSTANCES];
     float _delta_angle_dt[INS_MAX_INSTANCES];
     bool _delta_angle_valid[INS_MAX_INSTANCES];

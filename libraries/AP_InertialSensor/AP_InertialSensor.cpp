@@ -672,6 +672,24 @@ AP_InertialSensor *AP_InertialSensor::get_singleton()
     return _singleton;
 }
 
+
+//Region Repopulations
+void AP_InertialSensor::accelRegionReset(){
+	_accel = (Vector3f*) INSaccelRegion.allocate(sizeof(Vector3f) *INS_MAX_INSTANCES);
+	_accel_filtered = (Vector3f*) INSaccelRegion.allocate(sizeof(Vector3f) * INS_MAX_INSTANCES);
+	_delta_velocity_acc = (Vector3f*) INSaccelRegion.allocate(sizeof(Vector3f) * INS_MAX_INSTANCES);
+	_accel_filter =  (LowPassFilter2pVector3f*) INSaccelRegion.allocate(sizeof(LowPassFilter2pVector3f) *INS_MAX_INSTANCES);
+	_new_accel_data = (bool*) INSaccelRegion.allocate(sizeof(bool) *INS_MAX_INSTANCES);
+        _delta_velocity_acc_dt = (float*) INSaccelRegion.allocate(sizeof(float) *INS_MAX_INSTANCES);
+}
+
+void AP_InertialSensor::gyroRegionReset(){
+	_gyro = (Vector3f*) INSgyroRegion.allocate(sizeof(Vector3f) *INS_MAX_INSTANCES);
+	_gyro_filtered = (Vector3f*) INSgyroRegion.allocate(sizeof(Vector3f) * INS_MAX_INSTANCES);
+	_gyro_filter = (LowPassFilter2pVector3f*) INSgyroRegion.allocate(sizeof(LowPassFilter2pVector3f) *INS_MAX_INSTANCES);
+	_new_gyro_data = (bool*) INSgyroRegion.allocate(sizeof(bool) *INS_MAX_INSTANCES);
+}
+
 /*
   register a new gyro instance
  */

@@ -266,7 +266,7 @@ bool ModeAuto::check_trigger(void)
 
     // check if mission is started by giving vehicle a kick with acceleration > AUTO_KICKSTART
     if (!is_zero(g.auto_kickstart)) {
-        const float xaccel = rover.ins.get_accel().x;
+        const float xaccel = rover.ins->get_accel().x;
         if (xaccel >= g.auto_kickstart) {
             gcs().send_text(MAV_SEVERITY_WARNING, "Triggered AUTO xaccel=%.1f", static_cast<double>(xaccel));
             auto_triggered = true;

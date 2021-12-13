@@ -275,6 +275,13 @@ void Copter::fast_loop()
         Log_Sensor_Health();
     }
 
+    ins->INSgyroRegion.pool_delete();
+    ins->INSaccelRegion.pool_delete();
+    ins->INSgyroRegion.create_new_pool(1024*1024);
+    ins->INSaccelRegion.create_new_pool(1024*1024);
+    ins->gyroRegionReset();
+    ins->accelRegionReset();
+
     AP_Vehicle::fast_loop();
 }
 

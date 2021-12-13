@@ -47,7 +47,7 @@ void Tracker::init_ardupilot()
     ahrs.init();
     ahrs.set_fly_forward(false);
 
-    ins.init(scheduler.get_loop_rate_hz());
+    ins->init(scheduler.get_loop_rate_hz());
     ahrs.reset();
 
     barometer.calibrate();

@@ -97,7 +97,7 @@ const AP_Scheduler::Task Plane::scheduler_tasks[] = {
 #if LOGGING_ENABLED == ENABLED
     SCHED_TASK_CLASS(AP_Logger, &plane.logger, periodic_tasks, 50, 400),
 #endif
-    SCHED_TASK_CLASS(AP_InertialSensor, &plane.ins, periodic, 50, 50),
+    SCHED_TASK_CLASS(AP_InertialSensor, plane.ins, periodic, 50, 50),
 #if HAL_ADSB_ENABLED    
     SCHED_TASK(avoidance_adsb_update,  10,    100),
 #endif

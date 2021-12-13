@@ -20,7 +20,7 @@ void Plane::init_ardupilot()
     g2.stats.init();
 #endif
 
-    ins.set_log_raw_bit(MASK_LOG_IMU_RAW);
+    ins->set_log_raw_bit(MASK_LOG_IMU_RAW);
 
     // setup any board specific drivers
     BoardConfig.init();
@@ -372,7 +372,7 @@ void Plane::check_short_failsafe()
 
 void Plane::startup_INS_ground(void)
 {
-    if (ins.gyro_calibration_timing() != AP_InertialSensor::GYRO_CAL_NEVER) {
+    if (ins->gyro_calibration_timing() != AP_InertialSensor::GYRO_CAL_NEVER) {
         gcs().send_text(MAV_SEVERITY_ALERT, "Beginning INS calibration. Do not move plane");
     } else {
         gcs().send_text(MAV_SEVERITY_ALERT, "Skipping INS calibration");
@@ -383,7 +383,7 @@ void Plane::startup_INS_ground(void)
     ahrs.set_vehicle_class(AP_AHRS::VehicleClass::FIXED_WING);
     ahrs.set_wind_estimation_enabled(true);
 
-    ins.init(scheduler.get_loop_rate_hz());
+    ins->init(scheduler.get_loop_rate_hz());
     ahrs.reset();
 
     // read Baro pressure at ground
@@ -437,22 +437,22 @@ int8_t Plane::throttle_percentage(void)
 // update the harmonic notch filter center frequency dynamically
 void Plane::update_dynamic_notch()
 {
-    if (!ins.gyro_harmonic_notch_enabled()) {
+    if (!ins->gyro_harmonic_notch_enabled()) {
         return;
     }
-    const float ref_freq = ins.get_gyro_harmonic_notch_center_freq_hz();
-    const float ref = ins.get_gyro_harmonic_notch_reference();
+    const float ref_freq = ins->get_gyro_harmonic_notch_center_freq_hz();
+    const float ref = ins->get_gyro_harmonic_notch_reference();
 
     if (is_zero(ref)) {
-        ins.update_harmonic_notch_freq_hz(ref_freq);
+        ins->update_harmonic_notch_freq_hz(ref_freq);
         return;
     }
 
-    switch (ins.get_gyro_harmonic_notch_tracking_mode()) {
+    switch (ins->get_gyro_harmonic_notch_tracking_mode()) {
         case HarmonicNotchDynamicMode::UpdateThrottle: // throttle based tracking
             // set the harmonic notch filter frequency approximately scaled on motor rpm implied by throttle
             if (quadplane.available()) {
-                ins.update_harmonic_notch_freq_hz(ref_freq * MAX(1.0f, sqrtf(quadplane.motors->get_throttle_out() / ref)));
+                ins->update_harmonic_notch_freq_hz(ref_freq * MAX(1.0f, sqrtf(quadplane.motors->get_throttle_out() / ref)));
             }
             break;
 
@@ -460,15 +460,15 @@ void Plane::update_dynamic_notch()
             float rpm;
             if (rpm_sensor.get_rpm(0, rpm)) {
                 // set the harmonic notch filter frequency from the main rotor rpm
-                ins.update_harmonic_notch_freq_hz(MAX(ref_freq, rpm * ref / 60.0f));
+                ins->update_harmonic_notch_freq_hz(MAX(ref_freq, rpm * ref / 60.0f));
             } else {
-                ins.update_harmonic_notch_freq_hz(ref_freq);
+                ins->update_harmonic_notch_freq_hz(ref_freq);
             }
             break;
 #if HAL_WITH_ESC_TELEM
         case HarmonicNotchDynamicMode::UpdateBLHeli: // BLHeli based tracking
             // set the harmonic notch filter frequency scaled on measured frequency
-            if (ins.has_harmonic_option(HarmonicNotchFilterParams::Options::DynamicHarmonic)) {
+            if (ins->has_harmonic_option(HarmonicNotchFilterParams::Options::DynamicHarmonic)) {
                 float notches[INS_MAX_NOTCHES];
                 const uint8_t num_notches = AP::esc_telem().get_motor_frequencies_hz(INS_MAX_NOTCHES, notches);
 
@@ -476,33 +476,33 @@ void Plane::update_dynamic_notch()
                     notches[i] =  MAX(ref_freq, notches[i]);
                 }
                 if (num_notches > 0) {
-                    ins.update_harmonic_notch_frequencies_hz(num_notches, notches);
+                    ins->update_harmonic_notch_frequencies_hz(num_notches, notches);
                 } else if (quadplane.available()) {    // throttle fallback
-                    ins.update_harmonic_notch_freq_hz(ref_freq * MAX(1.0f, sqrtf(quadplane.motors->get_throttle_out() / ref)));
+                    ins->update_harmonic_notch_freq_hz(ref_freq * MAX(1.0f, sqrtf(quadplane.motors->get_throttle_out() / ref)));
                 } else {
-                    ins.update_harmonic_notch_freq_hz(ref_freq);
+                    ins->update_harmonic_notch_freq_hz(ref_freq);
                 }
             } else {
-                ins.update_harmonic_notch_freq_hz(MAX(ref_freq, AP::esc_telem().get_average_motor_frequency_hz() * ref));
+                ins->update_harmonic_notch_freq_hz(MAX(ref_freq, AP::esc_telem().get_average_motor_frequency_hz() * ref));
             }
             break;
 #endif
 #if HAL_GYROFFT_ENABLED
         case HarmonicNotchDynamicMode::UpdateGyroFFT: // FFT based tracking
             // set the harmonic notch filter frequency scaled on measured frequency
-            if (ins.has_harmonic_option(HarmonicNotchFilterParams::Options::DynamicHarmonic)) {
+            if (ins->has_harmonic_option(HarmonicNotchFilterParams::Options::DynamicHarmonic)) {
                 float notches[INS_MAX_NOTCHES];
                 const uint8_t peaks = gyro_fft.get_weighted_noise_center_frequencies_hz(INS_MAX_NOTCHES, notches);
 
-                ins.update_harmonic_notch_frequencies_hz(peaks, notches);
+                ins->update_harmonic_notch_frequencies_hz(peaks, notches);
             } else {
-                ins.update_harmonic_notch_freq_hz(gyro_fft.get_weighted_noise_center_freq_hz());
+                ins->update_harmonic_notch_freq_hz(gyro_fft.get_weighted_noise_center_freq_hz());
             }
             break;
 #endif
         case HarmonicNotchDynamicMode::Fixed: // static
         default:
-            ins.update_harmonic_notch_freq_hz(ref_freq);
+            ins->update_harmonic_notch_freq_hz(ref_freq);
             break;
     }
 }

@@ -88,7 +88,7 @@ void Rover::init_ardupilot()
     gps.set_log_gps_bit(MASK_LOG_GPS);
     gps.init(serial_manager);
 
-    ins.set_log_raw_bit(MASK_LOG_IMU_RAW);
+    ins->set_log_raw_bit(MASK_LOG_IMU_RAW);
 
     init_rc_in();            // sets up rc channels deadzone
     g2.motors.init(get_frame_type());        // init motors including setting servo out channels ranges
@@ -264,7 +264,7 @@ void Rover::startup_INS_ground(void)
     ahrs.set_fly_forward(true);
     ahrs.set_vehicle_class(AP_AHRS::VehicleClass::GROUND);
 
-    ins.init(scheduler.get_loop_rate_hz());
+    ins->init(scheduler.get_loop_rate_hz());
     ahrs.reset();
 }
 
